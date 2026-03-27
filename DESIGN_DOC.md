@@ -341,6 +341,7 @@ Tab Bar
 |------|----------------|
 | 2025 | Data model designed and all core decisions resolved |
 | 2025 | Screen map completed, Lineup feature designed, Profile stats finalized |
+| 2025 | Swift model layer defined as next step — paused to set up Claude Code first |
 
 ---
 
@@ -350,3 +351,14 @@ Tab Bar
 - [Spotify Web API](https://developer.spotify.com/documentation/web-api)
 - [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API)
 - [Letterboxd](https://letterboxd.com) — primary UX reference
+
+
+## 11. Next Session Checklist
+
+- [ ] Set up Claude Code (install, link to Xcode project)
+- [ ] Create Xcode project for Setlist
+- [ ] Build Swift model layer in this order:
+    1. Models.swift — all structs
+    2. DataService.swift — ExternalEntity, UserContent, and DataService protocols
+    3. MockDataService.swift — realistic fake data to power UI development
+- [ ] Paste this design doc at the start of the session for full context

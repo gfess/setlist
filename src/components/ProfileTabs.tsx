@@ -99,13 +99,29 @@ export default function ProfileTabs({
 
         {active === "lists" && (
           <div className="flex flex-col gap-3">
+            {showLineup && (
+              <Link
+                href="/lists/new"
+                className="self-start rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-[#06210f] transition-opacity hover:opacity-90"
+              >
+                + New List
+              </Link>
+            )}
             {lists.length === 0 && <p className="text-sm text-muted">No lists yet.</p>}
             {lists.map((list) => (
-              <div key={list.id} className="rounded-lg border border-border bg-surface p-4">
+              <Link
+                key={list.id}
+                href={`/list/${list.id}`}
+                className="block rounded-lg border border-border bg-surface p-4 hover:bg-surface-hover"
+              >
                 <p className="font-medium">{list.title}</p>
-                <p className="text-sm text-muted">{list.description}</p>
-                <p className="mt-1 text-xs text-muted">{list.entries.length} concerts</p>
-              </div>
+                {list.description && <p className="text-sm text-muted">{list.description}</p>}
+                <p className="mt-1 text-xs text-muted">
+                  {list.entries.length} concerts
+                  {list.isRanked && " · Ranked"}
+                  {!list.isPublic && " · Private"}
+                </p>
+              </Link>
             ))}
           </div>
         )}

@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { concerts, getArtist, getConcert, getSong, getVenue } from "@/lib/mockData";
+import { CURRENT_USER_ID, concerts, getArtist, getConcert, getSong, getVenue } from "@/lib/mockData";
+import { useInteractions } from "@/lib/store";
 import { formatDate } from "@/lib/format";
 
 type Step = "search" | "rate" | "review" | "highlight" | "visibility" | "done";
@@ -21,6 +22,7 @@ export default function LogFlow() {
   const [review, setReview] = useState("");
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());
   const [isPrivate, setIsPrivate] = useState(false);
+  const { addLog } = useInteractions();
 
   const concert = concertId ? getConcert(concertId) : undefined;
   const artist = concert ? getArtist(concert.artistId) : undefined;
@@ -49,6 +51,24 @@ export default function LogFlow() {
   function goBack() {
     const idx = steps.indexOf(step);
     if (idx > 0) setStep(steps[idx - 1]);
+  }
+
+  function saveLog() {
+    if (!concert) return;
+    const now = new Date().toISOString();
+    addLog({
+      id: `ul-${concert.id}-${now}`,
+      userId: CURRENT_USER_ID,
+      concertId: concert.id,
+      attendedDate: concert.date,
+      rating: rating ?? undefined,
+      review: review.trim() || undefined,
+      isPrivate,
+      likedSongIds: Array.from(highlighted),
+      createdAt: now,
+      updatedAt: now,
+    });
+    setStep("done");
   }
 
   if (step === "done") {
@@ -259,7 +279,7 @@ export default function LogFlow() {
               ← Back
             </button>
             <button
-              onClick={goNext}
+              onClick={saveLog}
               className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-[#06210f] hover:opacity-90"
             >
               Save log

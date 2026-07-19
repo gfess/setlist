@@ -7,6 +7,7 @@ import {
   timesSeenByUser,
 } from "@/lib/mockData";
 import ConcertRow from "@/components/ConcertRow";
+import WantToSeeButton from "@/components/WantToSeeButton";
 
 export default async function ArtistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -38,9 +39,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
           </div>
           <p className="mt-3 max-w-md text-sm text-foreground/90">{artist.bio}</p>
           <div className="mt-4 flex items-center gap-3">
-            <button className="rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-[#06210f] transition-opacity hover:opacity-90">
-              + Want to See
-            </button>
+            <WantToSeeButton artistId={artist.id} />
             <span className="text-sm text-muted">
               You&apos;ve seen {artist.name} {timesSeen} time{timesSeen === 1 ? "" : "s"}
             </span>

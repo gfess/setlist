@@ -3,6 +3,7 @@ import type { ConcertLog } from "@/types";
 import { getArtist, getConcert, getUser, getVenue } from "@/lib/mockData";
 import { formatDate, timeAgo } from "@/lib/format";
 import StarRating from "./StarRating";
+import LikeButton from "./LikeButton";
 
 export default function ConcertLogCard({ log }: { log: ConcertLog }) {
   const concert = getConcert(log.concertId);
@@ -37,6 +38,10 @@ export default function ConcertLogCard({ log }: { log: ConcertLog }) {
       )}
 
       {log.review && <p className="mt-2 text-sm leading-relaxed text-foreground/90">{log.review}</p>}
+
+      <div className="mt-3 border-t border-border pt-2">
+        <LikeButton concertLogId={log.id} />
+      </div>
     </article>
   );
 }

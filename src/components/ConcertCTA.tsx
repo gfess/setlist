@@ -1,32 +1,35 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useInteractions } from "@/lib/store";
+import { getConcertLogsForConcert } from "@/lib/mockData";
+import { CURRENT_USER_ID } from "@/lib/mockData";
 
 export default function ConcertCTA({
   concertId,
   upcoming,
-  initiallyLogged,
-  initiallyInLineup,
 }: {
   concertId: string;
   upcoming: boolean;
-  initiallyLogged: boolean;
-  initiallyInLineup: boolean;
 }) {
-  const [inLineup, setInLineup] = useState(initiallyInLineup);
+  const { inLineup, toggleLineup, userLogs } = useInteractions();
+
+  const loggedInMock = getConcertLogsForConcert(concertId).some((l) => l.userId === CURRENT_USER_ID);
+  const loggedInStore = userLogs.some((l) => l.concertId === concertId);
+  const logged = loggedInMock || loggedInStore;
+
+  if (logged) {
+    return (
+      <Link
+        href={`/log?concertId=${concertId}`}
+        className="rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
+      >
+        ✓ Logged
+      </Link>
+    );
+  }
 
   if (!upcoming) {
-    if (initiallyLogged) {
-      return (
-        <Link
-          href={`/log?concertId=${concertId}`}
-          className="rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent transition-colors hover:bg-accent/10"
-        >
-          ✓ Logged
-        </Link>
-      );
-    }
     return (
       <Link
         href={`/log?concertId=${concertId}`}
@@ -37,10 +40,10 @@ export default function ConcertCTA({
     );
   }
 
-  if (inLineup) {
+  if (inLineup(concertId)) {
     return (
       <button
-        onClick={() => setInLineup(false)}
+        onClick={() => toggleLineup(concertId)}
         className="rounded-full border border-accent-blue px-5 py-2 text-sm font-semibold text-accent-blue transition-colors hover:bg-accent-blue/10"
       >
         In your Lineup
@@ -50,7 +53,7 @@ export default function ConcertCTA({
 
   return (
     <button
-      onClick={() => setInLineup(true)}
+      onClick={() => toggleLineup(concertId)}
       className="rounded-full bg-accent-blue px-5 py-2 text-sm font-semibold text-[#06210f] transition-opacity hover:opacity-90"
     >
       Add to Lineup

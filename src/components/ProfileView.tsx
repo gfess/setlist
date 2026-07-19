@@ -15,7 +15,7 @@ import ProfileTabs from "@/components/ProfileTabs";
 import FollowButton from "@/components/FollowButton";
 
 export default function ProfileView({ user, isOwn }: { user: User; isOwn: boolean }) {
-  const { userLogs, lineup } = useInteractions();
+  const { userLogs, lineup, userLists } = useInteractions();
 
   const mockLogs = getConcertLogsForUser(user.id);
   // For your own profile, merge in logs created this session.
@@ -25,7 +25,9 @@ export default function ProfileView({ user, isOwn }: { user: User; isOwn: boolea
     ...mockLogs.filter((m) => !storeLogs.some((s) => s.id === m.id)),
   ].sort((a, b) => (a.attendedDate < b.attendedDate ? 1 : -1));
 
-  const lists = getListsForUser(user.id);
+  // The current user's lists are owned by the store (editable); other users'
+  // come from the mock layer.
+  const lists = isOwn ? userLists : getListsForUser(user.id);
 
   // Lineup reflects the live store (own profile), minus anything now logged.
   const loggedConcertIds = new Set(logs.map((l) => l.concertId));
